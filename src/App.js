@@ -125,7 +125,7 @@ const Buttons = ({ id, setID, isLoading }) => {
         break;
       }
       case "up": {
-        if (id < 720) {
+        if (id < 800) {
           setID(id + 1);
           break;
         }
