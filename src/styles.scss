@@ -113,23 +113,16 @@ $orange: #f79963;
             background-color: $ffg;
             border-radius: 10px;
             position: relative;
-            @keyframes load {
-              from {
-                width: 0%;
-                left: 0;
-              }
-              to {
-                width: 100%;
-              }
-            }
-            &:after {
+            opacity: 0;
+            .range {
               content: "";
               position: absolute;
               height: 100%;
               top: 0;
+              left: 0;
               border-radius: inherit;
               background-color: $offwhite;
-              animation: load 3s linear infinite alternate;
+              animation: load 3s linear;
             }
           }
         }

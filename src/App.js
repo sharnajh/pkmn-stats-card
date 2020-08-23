@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
+import { TimelineMax} from "gsap";
 import { colors, typeColors } from "./colors";
 import "./styles.scss";
 
@@ -78,42 +79,74 @@ const Types = ({ data }) => {
   );
 };
 
-const Loader = () => {
-  const [show, setShow] = useState(false);
+const Loader = ({ setShow, isLoading }) => {
+  const [start, setStart] = useState(false);
+  let loader = useRef();
+  let range = useRef();
+  const tl = useRef();
   useEffect(() => {
     setTimeout(() => {
+      setStart(true);
+    },100);
+    if (start) {
+      tl.current = new TimelineMax({ onComplete: () => setShow(true) })
+        .set(loader.current, { autoAlpha: 1 })
+        .to(range.current, 3, { width: 100 + "%" });
+    }
+  }, [start, setShow]);
+  useEffect(() => {
+    if (!start && !isLoading) {
       setShow(true);
-    }, 100);
-  });
-  return <div className="loading">{show && <div className="loader" />}</div>;
+    }
+    if (start && !isLoading) {
+      tl.current.timeScale(10);
+    }
+  }, [isLoading, setShow, start]);
+  return (
+    <div className="loading">
+      <div className="loader" ref={loader}>
+        <div className="range" ref={range} />
+      </div>
+    </div>
+  );
 };
 
-const PokeInfo = ({ pkmn, isLoading }) => (
-  <div className="sprite-container">
-    {isLoading ? (
-      <Loader />
-    ) : (
-      <React.Fragment>
-        <div className="id">#{pkmn.id}</div>
-        <div className="img-wrapper">
-          <img className="sprite" src={pkmn.sprites.front_default} alt={pkmn.name} />
-        </div>
-        <h3 className="name">{pkmn.name}</h3>
-        <Types data={pkmn.types} />
-      </React.Fragment>
-    )}
-  </div>
-);
+const PokeInfo = ({ pkmn, isLoading }) => {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (isLoading) {
+      setShow(false);
+    }
+  }, [isLoading]);
+  return (
+    <div className="sprite-container">
+      {!show ? (
+        <Loader isLoading={isLoading} setShow={setShow} />
+      ) : (
+        <React.Fragment>
+          <div className="id">#{pkmn.id}</div>
+          <div className="img-wrapper">
+            <img
+              className="sprite"
+              src={pkmn.sprites.front_default}
+              alt={pkmn.name}
+            />
+          </div>
+          <h3 className="name">{pkmn.name}</h3>
+          <Types data={pkmn.types} />
+        </React.Fragment>
+      )}
+    </div>
+  );
+};
 
 const PokemonCard = ({ pkmn, isLoading, children }) => {
   return (
-    pkmn && (
-      <div id="card">
-        {children}
-        <PokeInfo isLoading={isLoading} pkmn={pkmn} />
-        <Data data={pkmn.stats} />
-      </div>
-    )
+    <div id="card">
+      {children}
+      <PokeInfo isLoading={isLoading} pkmn={pkmn} />
+      <Data data={pkmn.stats} />
+    </div>
   );
 };
 
@@ -138,7 +171,8 @@ const Buttons = ({ id, setID, isLoading }) => {
         }
         break;
       }
-      default: break;
+      default:
+        break;
     }
   };
   const buttonVals = {
@@ -176,9 +210,11 @@ const App = () => {
     fetchPkmn();
   }, [id]);
   return (
-    <PokemonCard isLoading={isLoading} pkmn={pkmn}>
-      <Buttons isLoading={isLoading} id={id} setID={setID} />
-    </PokemonCard>
+    pkmn && (
+      <PokemonCard isLoading={isLoading} pkmn={pkmn}>
+        <Buttons isLoading={isLoading} id={id} setID={setID} />
+      </PokemonCard>
+    )
   );
 };
 
