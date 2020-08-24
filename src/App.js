@@ -62,6 +62,7 @@ const Types = ({ data }) => {
 
 const Loader = ({ setShow, isLoading }) => {
   const [start, setStart] = useState(false);
+  const [completed, setCompleted] = useState(false);
   let loader = useRef();
   let range = useRef();
   const tl = useRef();
@@ -70,19 +71,31 @@ const Loader = ({ setShow, isLoading }) => {
       setStart(true);
     }, 100);
     if (start) {
-      tl.current = new TimelineMax({ onComplete: () => setShow(true) })
+      tl.current = new TimelineMax({
+        timeScale: 0.5,
+        onComplete: () => setCompleted(true)
+      })
         .set(loader.current, { autoAlpha: 1 })
-        .to(range.current, 3, { width: 100 + "%" });
+        .to(range.current, 3, { width: 90 + "%" });
     }
   }, [start, setShow]);
   useEffect(() => {
+    // Check if animation hasn't started yet but the data has already loaded
     if (!start && !isLoading) {
       setShow(true);
     }
-    if (start && !isLoading) {
-      tl.current.timeScale(10);
+    // Speed up the animation when data has loaded
+    if (start && !completed && !isLoading) {
+      tl.current.timeScale(15)
+                .to(range.current,1,{ width: 100 + "%" })
     }
-  }, [isLoading, setShow, start]);
+    // Waits for data to load after animation completed
+    if (completed && !isLoading) {
+      tl.current.timeScale(15)
+                .to(range.current,1,{ width: 100 + "%" })
+      setShow(true);
+    };
+  }, [isLoading, setShow, start, completed]);
   return (
     <div className="loading">
       <div className="loader" ref={loader}>
