@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from 'axios';
-import { TimelineMax} from "gsap";
+import axios from "axios";
+import { TimelineMax } from "gsap";
 import { colors, typeColors } from "./colors";
 import "./styles.scss";
 
@@ -87,7 +87,7 @@ const Loader = ({ setShow, isLoading }) => {
   useEffect(() => {
     setTimeout(() => {
       setStart(true);
-    },100);
+    }, 100);
     if (start) {
       tl.current = new TimelineMax({ onComplete: () => setShow(true) })
         .set(loader.current, { autoAlpha: 1 })
@@ -111,6 +111,21 @@ const Loader = ({ setShow, isLoading }) => {
   );
 };
 
+const Info = ({ pkmn }) => (
+  <React.Fragment>
+    <div className="id">#{pkmn.id}</div>
+    <div className="img-wrapper">
+      <img
+        className="sprite"
+        src={pkmn.sprites.front_default}
+        alt={pkmn.name}
+      />
+    </div>
+    <h3 className="name">{pkmn.name}</h3>
+    <Types data={pkmn.types} />
+  </React.Fragment>
+);
+
 const PokeInfo = ({ pkmn, isLoading }) => {
   const [show, setShow] = useState(false);
   useEffect(() => {
@@ -123,18 +138,7 @@ const PokeInfo = ({ pkmn, isLoading }) => {
       {!show ? (
         <Loader isLoading={isLoading} setShow={setShow} />
       ) : (
-        <React.Fragment>
-          <div className="id">#{pkmn.id}</div>
-          <div className="img-wrapper">
-            <img
-              className="sprite"
-              src={pkmn.sprites.front_default}
-              alt={pkmn.name}
-            />
-          </div>
-          <h3 className="name">{pkmn.name}</h3>
-          <Types data={pkmn.types} />
-        </React.Fragment>
+        <Info pkmn={pkmn} />
       )}
     </div>
   );
