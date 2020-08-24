@@ -1,4 +1,4 @@
-export const colors = {
+const colors = {
   green: "#69D639",
   blue: "#03A9FF",
   purple: "#9356F3",
@@ -26,4 +26,23 @@ export const typeColors = {
   dark: "705746",
   steel: "B7B7CE",
   fairy: "D685AD"
+};
+
+export const getColor = (type) => {
+  switch (type) {
+    case "hp":
+      return colors.red;
+    case "attack":
+      return colors.orange;
+    case "defense":
+      return colors.purple;
+    case "special-attack":
+      return colors.blue;
+    case "special-defense":
+      return colors.green;
+    case "speed":
+      return colors.pink;
+    default:
+      return "#fff";
+  }
 };

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { TimelineMax } from "gsap";
-import { colors, typeColors } from "./colors";
+import { getColor, typeColors } from "./colors";
+import { url } from "./API";
 import "./styles.scss";
-
-const url = "https://pokeapi.co/api/v2/pokemon/";
 
 const Stat = ({ color, width, dataType, dataValue }) => {
   const styles = {
@@ -31,24 +30,6 @@ const Stat = ({ color, width, dataType, dataValue }) => {
 const Data = ({ data }) => {
   const calcPercent = (base_stat) => {
     return (base_stat / 255) * 100;
-  };
-  const getColor = (type) => {
-    switch (type) {
-      case "hp":
-        return colors.red;
-      case "attack":
-        return colors.orange;
-      case "defense":
-        return colors.purple;
-      case "special-attack":
-        return colors.blue;
-      case "special-defense":
-        return colors.green;
-      case "speed":
-        return colors.pink;
-      default:
-        return "#fff";
-    }
   };
   return (
     <div className="data-container">
@@ -111,21 +92,6 @@ const Loader = ({ setShow, isLoading }) => {
   );
 };
 
-const Info = ({ pkmn }) => (
-  <React.Fragment>
-    <div className="id">#{pkmn.id}</div>
-    <div className="img-wrapper">
-      <img
-        className="sprite"
-        src={pkmn.sprites.front_default}
-        alt={pkmn.name}
-      />
-    </div>
-    <h3 className="name">{pkmn.name}</h3>
-    <Types data={pkmn.types} />
-  </React.Fragment>
-);
-
 const PokeInfo = ({ pkmn, isLoading }) => {
   const [show, setShow] = useState(false);
   useEffect(() => {
@@ -138,7 +104,18 @@ const PokeInfo = ({ pkmn, isLoading }) => {
       {!show ? (
         <Loader isLoading={isLoading} setShow={setShow} />
       ) : (
-        <Info pkmn={pkmn} />
+        <React.Fragment>
+          <div className="id">#{pkmn.id}</div>
+          <div className="img-wrapper">
+            <img
+              className="sprite"
+              src={pkmn.sprites.front_default}
+              alt={pkmn.name}
+            />
+          </div>
+          <h3 className="name">{pkmn.name}</h3>
+          <Types data={pkmn.types} />
+        </React.Fragment>
       )}
     </div>
   );
@@ -187,7 +164,11 @@ const Buttons = ({ id, setID, isLoading }) => {
   return (
     <div className="btns">
       {Object.entries(buttonVals).map((pair) => (
-        <button onClick={() => updateID(pair[0])} disabled={isLoading}>
+        <button
+          key={pair[0]}
+          onClick={() => updateID(pair[0])}
+          disabled={isLoading}
+        >
           {pair[1]}
         </button>
       ))}
