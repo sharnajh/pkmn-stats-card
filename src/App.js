@@ -87,12 +87,12 @@ const Loader = ({ setShow, isLoading }) => {
     // Speed up the animation when data has loaded
     if (start && !completed && !isLoading) {
       tl.current.timeScale(15)
-                .to(range.current,1,{ width: 100 + "%" })
+                .to(range.current,1,{ width: 100 + "%" });      
     }
     // Waits for data to load after animation completed
     if (completed && !isLoading) {
       tl.current.timeScale(15)
-                .to(range.current,1,{ width: 100 + "%" })
+                .to(range.current,1,{ width: 100 + "%" });
       setShow(true);
     };
   }, [isLoading, setShow, start, completed]);
