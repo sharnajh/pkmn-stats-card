@@ -86,15 +86,16 @@ const Loader = ({ setShow, isLoading }) => {
     }
     // Speed up the animation when data has loaded
     if (start && !completed && !isLoading) {
-      tl.current.timeScale(15)
-                .to(range.current,1,{ width: 100 + "%" });      
+      tl.current.timeScale(15);
     }
     // Waits for data to load after animation completed
     if (completed && !isLoading) {
-      tl.current.timeScale(15)
-                .to(range.current,1,{ width: 100 + "%" });
-      setShow(true);
-    };
+      tl.current
+        .to(range.current, 1, {
+          width: 100 + "%",
+          onComplete: () => setShow(true)
+        });
+    }
   }, [isLoading, setShow, start, completed]);
   return (
     <div className="loading">
@@ -147,26 +148,21 @@ const PokemonCard = ({ pkmn, isLoading, children }) => {
 const Buttons = ({ id, setID, isLoading }) => {
   const updateID = (updateType) => {
     switch (updateType) {
-      case "random": {
+      case "random": 
         setID(Math.floor(Math.random() * 800));
         break;
-      }
-      case "up": {
+      case "up": 
         if (id < 800) {
           setID(id + 1);
-          break;
         }
         break;
-      }
-      case "down": {
+      case "down":
         if (id > 1) {
           setID(id - 1);
-          break;
         }
         break;
-      }
       default:
-        break;
+        throw new Error();
     }
   };
   const buttonVals = {
