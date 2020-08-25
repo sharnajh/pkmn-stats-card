@@ -69,7 +69,7 @@ const Loader = ({ setShow, isLoading }) => {
   useEffect(() => {
     setTimeout(() => {
       setStart(true);
-    }, 100);
+    }, 150);
     if (start) {
       tl.current = new gsap.timeline({
         timeScale: 0.5,
