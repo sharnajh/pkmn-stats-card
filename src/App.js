@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { TimelineMax } from "gsap";
 import { getColor, typeColors } from "./colors";
 import { url } from "./API";
 import "./styles.scss";
+import gsap from "gsap";
 
 const Stat = ({ color, width, dataType, dataValue }) => {
   const styles = {
@@ -71,7 +71,7 @@ const Loader = ({ setShow, isLoading }) => {
       setStart(true);
     }, 100);
     if (start) {
-      tl.current = new TimelineMax({
+      tl.current = new gsap.timeline({
         timeScale: 0.5,
         onComplete: () => setCompleted(true)
       })
@@ -91,10 +91,11 @@ const Loader = ({ setShow, isLoading }) => {
     // Waits for data to load after animation completed
     if (completed && !isLoading) {
       tl.current
+        .timeScale(15)
         .to(range.current, 1, {
-          width: 100 + "%",
-          onComplete: () => setShow(true)
-        });
+        width: 100 + "%",
+        onComplete: () => setShow(true)
+      });
     }
   }, [isLoading, setShow, start, completed]);
   return (
@@ -148,10 +149,10 @@ const PokemonCard = ({ pkmn, isLoading, children }) => {
 const Buttons = ({ id, setID, isLoading }) => {
   const updateID = (updateType) => {
     switch (updateType) {
-      case "random": 
+      case "random":
         setID(Math.floor(Math.random() * 800));
         break;
-      case "up": 
+      case "up":
         if (id < 800) {
           setID(id + 1);
         }
@@ -198,7 +199,7 @@ const App = () => {
         setPkmn(res.data);
         setIsLoading(false);
       } catch (error) {
-        console.log(`Error: ${error}`);
+        throw new Error();
       }
     };
     fetchPkmn();
