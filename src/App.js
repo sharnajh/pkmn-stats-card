@@ -167,7 +167,7 @@ const Buttons = ({ id, setID, isLoading }) => {
     }
   };
   const buttonVals = {
-    random: "🔀",
+    random: "♻",
     up: "▲",
     down: "▼"
   };
