@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { getColor, typeColors } from "./colors";
+import { statColors, typeColors } from "./colors";
 import { url } from "./API";
 import "./styles.scss";
 import gsap from "gsap";
@@ -38,7 +38,7 @@ const Data = ({ data }) => {
           dataType={stat.stat.name}
           dataValue={stat.base_stat}
           width={calcPercent(stat.base_stat)}
-          color={getColor(stat.stat.name)}
+          color={statColors[stat.stat.name]}
         />
       ))}
     </div>
